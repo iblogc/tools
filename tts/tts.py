@@ -9,6 +9,7 @@ VOICE = 'zh-CN-XiaoxiaoNeural'
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 TXT_PATH = os.path.join(CURRENT_DIR, 'txt')
 OUT_PATH = os.path.join(CURRENT_DIR, 'out')
+os.mkdir(OUT_PATH)
 PATTERN = '0*.txt'
 VOICE_RATE='+70%'
 
@@ -19,16 +20,19 @@ async def _main(txt) -> None:
     f = open(txt, encoding='utf-8')
     lines = f.readlines()
     # 去掉第一行链接
-    content = ''.join(lines[1:])
-    content = re.sub(r'[。！？……]', ',', content)
+    content = ''
+    for line in lines[1:]:
+        content += re.sub(r'^ *\d+.? *$', '', line)
+    # content = ''.join(lines[1:])
+    content = re.sub(r'[。！？……!?]', ',', content)
     print('总计约', len(content), '字')
     communicate = edge_tts.Communicate(content, VOICE, rate=VOICE_RATE)
     submaker = edge_tts.SubMaker()
     file_name_with_no_suffix = txt.split('\\')[-1].split('.')[0].replace('0-', '')
-    print(file_name_with_no_suffix)
+    # print(file_name_with_no_suffix)
     mp3_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.mp3')
-    vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
-    srt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.srt')
+    # vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
+    # srt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.srt')
     with open(mp3_file, "wb") as file:
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
