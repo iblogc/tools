@@ -37,10 +37,10 @@ async def _main(txt) -> None:
                 submaker.create_sub((chunk["offset"], chunk["duration"]), chunk["text"])
         print('音频生成完成')
 
-    with open(vtt_sub_file, 'w', encoding="utf-8") as vtt_file:
-        vtt_file.write(submaker.generate_subs())
-        print('字幕生成完成')
-    vvt_2_srt(vtt_sub_file)
+    # with open(vtt_sub_file, 'w', encoding="utf-8") as vtt_file:
+    #     vtt_file.write(submaker.generate_subs())
+    #     print('字幕生成完成')
+    # vvt_2_srt(vtt_sub_file)
  
 def vvt_2_srt(vvt_file):
     idx = 1  # 字幕序号

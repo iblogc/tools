@@ -3,8 +3,8 @@
 ```shell
 # rate 语速
 # volume 音量
-edge-tts --voice zh-CN-XiaoxiaoNeural --rate=+30% --text "你是谁!"
-edge-playback --voice zh-CN-XiaoxiaoNeural --rate=+30% --text "你是谁？"
+edge-tts --voice zh-CN-XiaoxiaoNeural --rate=+30% --text "出乎意料地，乖乖挨骂。1我有些恍惚。"
+edge-playback --voice zh-CN-XiaoxiaoNeural --rate=+30% --text "出乎意料地，乖乖挨骂。1我有些恍惚。"
 edge-playback --voice zh-CN-XiaoxiaoNeural --rate=+30% --text "你是谁!"
 ```
 [Window Title]
