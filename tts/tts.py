@@ -9,7 +9,8 @@ VOICE = 'zh-CN-XiaoxiaoNeural'
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 TXT_PATH = os.path.join(CURRENT_DIR, 'txt')
 OUT_PATH = os.path.join(CURRENT_DIR, 'out')
-os.mkdir(OUT_PATH)
+if not os.path.isdir(OUT_PATH):
+    os.mkdir(OUT_PATH)
 PATTERN = '0*.txt'
 VOICE_RATE='+70%'
 
@@ -28,7 +29,7 @@ async def _main(txt) -> None:
     print('总计约', len(content), '字')
     communicate = edge_tts.Communicate(content, VOICE, rate=VOICE_RATE)
     submaker = edge_tts.SubMaker()
-    file_name_with_no_suffix = txt.split('\\')[-1].split('.')[0].replace('0-', '')
+    file_name_with_no_suffix = re.split(r'[\/]', txt)[-1].split('.')[0].replace('0-', '')
     # print(file_name_with_no_suffix)
     mp3_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.mp3')
     # vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
@@ -67,7 +68,7 @@ if __name__ == "__main__":
         for filename in fnmatch.filter(files, PATTERN):
             file_path = os.path.join(root, filename)
             asyncio.run(_main(file_path))
-            os.rename(file_path , os.path.join(root, filename.replace('0-', '1-')))
+            # os.rename(file_path , os.path.join(root, filename.replace('0-', '1-')))
 
 
 
