@@ -68,7 +68,7 @@ if __name__ == "__main__":
         for filename in fnmatch.filter(files, PATTERN):
             file_path = os.path.join(root, filename)
             asyncio.run(_main(file_path))
-            # os.rename(file_path , os.path.join(root, filename.replace('0-', '1-')))
+            os.rename(file_path , os.path.join(root, filename.replace('0-', '1-')))
 
 
 
