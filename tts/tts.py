@@ -29,10 +29,13 @@ async def _main(txt) -> None:
     print('总计约', len(content), '字')
     communicate = edge_tts.Communicate(content, VOICE, rate=VOICE_RATE)
     submaker = edge_tts.SubMaker()
-    file_name_with_no_suffix = re.split(r'[\/]', txt)[-1].split('.')[0].replace('0-', '')
+    # print(txt)
+    file_name_with_no_suffix = re.split(r'[\\/]', txt)[-1].split('.')[0].replace('0-', '')
     # print(file_name_with_no_suffix)
+    # print(OUT_PATH)
     mp3_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.mp3')
-    # vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
+    # print(mp3_file)
+    vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
     # srt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.srt')
     with open(mp3_file, "wb") as file:
         async for chunk in communicate.stream():
@@ -66,9 +69,7 @@ def vvt_2_srt(vvt_file):
 if __name__ == "__main__":
     for root, dirs, files in os.walk(TXT_PATH):
         for filename in fnmatch.filter(files, PATTERN):
+            print(filename)
             file_path = os.path.join(root, filename)
             asyncio.run(_main(file_path))
             os.rename(file_path , os.path.join(root, filename.replace('0-', '1-')))
-
-
-
