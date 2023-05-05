@@ -5,6 +5,16 @@ zh-CN-XiaoyiNeural: 女孩声
 
 edge-tts --voice zh-CN-XiaoxiaoNeural --text "Hello, world!" --write-media hello.mp3
 
+edge-playback --rate=+60% --voice zh-CN-XiaoxiaoNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+edge-playback --rate=+60% --voice zh-CN-XiaoyiNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+edge-playback --rate=+60% --voice zh-CN-shaanxi-XiaoniNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+
+
+edge-playback --rate=+60% --voice zh-CN-YunjianNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+edge-playback --rate=+60% --voice zh-CN-YunxiNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+edge-playback --rate=+60% --voice zh-CN-YunxiaNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+edge-playback --rate=+60% --voice zh-CN-YunyangNeural --text "我醉入东宫卧榻，毁了太子的婚约，也让他沦为全京城的笑话。"
+
 Name: af-ZA-AdriNeural  
 Gender: Female  
   

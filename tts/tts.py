@@ -12,7 +12,7 @@ OUT_PATH = os.path.join(CURRENT_DIR, 'out')
 if not os.path.isdir(OUT_PATH):
     os.mkdir(OUT_PATH)
 PATTERN = '0*.txt'
-VOICE_RATE='+70%'
+VOICE_RATE='+67%'
 
 
 
@@ -35,7 +35,7 @@ async def _main(txt) -> None:
     # print(OUT_PATH)
     mp3_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.mp3')
     # print(mp3_file)
-    vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
+    # vtt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.vtt')
     # srt_sub_file = os.path.join(OUT_PATH, file_name_with_no_suffix + '.srt')
     with open(mp3_file, "wb") as file:
         async for chunk in communicate.stream():
