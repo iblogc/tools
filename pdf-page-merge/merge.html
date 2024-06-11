@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Page Merger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    #download-link {
+      display: none;
+      margin-top: 20px;
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    #file-name {
+      margin-top: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Merge PDF Pages into One Page</h1>
+    <label for="pdf-input" class="btn">Choose PDF File</label>
+    <input type="file" id="pdf-input" accept="application/pdf" />
+    <p><span id="file-name"></span></p>
+    <button id="merge-button" class="btn" disabled>Merge PDF Pages</button>
+    <p><a id="download-link">Download Merged PDF</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+  <script>
+    const pdfInput = document.getElementById('pdf-input');
+    const mergeButton = document.getElementById('merge-button');
+    const downloadLink = document.getElementById('download-link');
+    const fileNameDisplay = document.getElementById('file-name');
+
+    pdfInput.addEventListener('change', () => {
+      const fileName = pdfInput.files[0] ? pdfInput.files[0].name : 'No file selected';
+      fileNameDisplay.textContent = `Selected file: ${fileName}`;
+      mergeButton.disabled = !pdfInput.files.length;
+    });
+
+    mergeButton.addEventListener('click', async () => {
+      if (!pdfInput.files.length) return;
+
+      const file = pdfInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        const arrayBuffer = event.target.result;
+        const mergedPdfBytes = await mergePagesToSinglePage(arrayBuffer);
+        
+        const optimizedPdfBytes = await optimizePdf(mergedPdfBytes);
+
+        const blob = new Blob([optimizedPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        downloadLink.href = url;
+        downloadLink.download = 'merged.pdf';
+        downloadLink.style.display = 'inline';
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
+
+    async function mergePagesToSinglePage(arrayBuffer) {
+      const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+      const pages = pdfDoc.getPages();
+      const numPages = pages.length;
+
+      const { width, height } = pages[0].getSize();
+      const mergedPdf = await PDFLib.PDFDocument.create();
+      const singlePage = mergedPdf.addPage([width, height * numPages]);
+
+      for (let i = 0; i < numPages; i++) {
+        const page = pages[i];
+        const embeddedPage = await mergedPdf.embedPage(page);
+        singlePage.drawPage(embeddedPage, { x: 0, y: height * (numPages - i - 1), width: width, height: height });
+      }
+
+      return await mergedPdf.save();
+    }
+
+    async function optimizePdf(pdfBytes) {
+      const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+      const mergedPdf = await PDFLib.PDFDocument.create();
+
+      const embeddedPages = new Map();
+
+      for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+        const page = await pdfDoc.getPage(i);
+        const embeddedPage = await mergedPdf.embedPage(page);
+        const { width, height } = page.getSize();
+        const newPage = mergedPdf.addPage([width, height]);
+        newPage.drawPage(embeddedPage, { x: 0, y: 0, width: width, height: height });
+      }
+
+      // Attempt to compress by using objects streams (not a direct method but a workaround for now)
+      const saveOptions = {
+        useObjectStreams: true,  // Enable object streams
+        updateFieldAppearances: false,  // Update appearances
+      };
+
+      return await mergedPdf.save(saveOptions);
+    }
+  </script>
+</body>
+</html>
